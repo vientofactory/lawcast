@@ -7,12 +7,10 @@ services:
     restart: unless-stopped
     ports:
       - "3001:3001"
+    env_file:
+      - ./backend/.env
     environment:
       - NODE_ENV=production
-      - PORT=3001
-      - FRONTEND_URL=${FRONTEND_URL:-}
-      # Add your environment variables here
-      - RECAPTCHA_SECRET_KEY=${RECAPTCHA_SECRET_KEY:-}
       - DATABASE_PATH=/app/data/lawcast.db
     volumes:
       # Mount SQLite database to persist data
@@ -37,6 +35,8 @@ services:
     restart: unless-stopped
     ports:
       - "3002:3002"
+    env_file:
+      - ./frontend/.env
     environment:
       - NODE_ENV=production
       # SvelteKit adapter-node configuration

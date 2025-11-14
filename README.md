@@ -137,7 +137,7 @@ npm run test
 
 ## 환경 설정
 
-### Backend (.env)
+### Backend (backend/.env)
 
 ```env
 # 서버 설정
@@ -154,7 +154,17 @@ RECAPTCHA_SECRET_KEY=your_secret_key_here
 CRON_TIMEZONE=Asia/Seoul
 
 # CORS 허용 도메인 (쉼표로 구분)
-FRONTEND_URL=http://localhost:5173,http://localhost:3000
+FRONTEND_URL=http://localhost:5173,http://localhost:3002
+```
+
+### Frontend (frontend/.env)
+
+```env
+# API 서버 URL
+PUBLIC_API_BASE_URL=http://localhost:3001/api
+
+# reCAPTCHA 사이트 키 (선택사항)
+PUBLIC_RECAPTCHA_SITE_KEY=your_site_key_here
 ```
 
 ### 환경 변수 설명
