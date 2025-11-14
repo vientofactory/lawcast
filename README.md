@@ -27,7 +27,27 @@ lawcast/
 
 ## 빠른 시작
 
-### 1. 백엔드 실행
+### Docker를 사용한 실행 (권장)
+
+```bash
+# 환경 변수 설정 (선택사항)
+echo "RECAPTCHA_SECRET_KEY=your_secret_key" > .env
+echo "PUBLIC_RECAPTCHA_SITE_KEY=your_site_key" >> .env
+
+# 프로덕션 환경
+docker-compose up -d
+
+# 개발 환경
+docker-compose -f docker-compose.dev.yml up -d
+```
+
+- 프로덕션: 프론트엔드 `http://localhost:3000`, 백엔드 `http://localhost:3001`
+- 개발환경: 프론트엔드 `http://localhost:5173`, 백엔드 `http://localhost:3001`
+- DB 데이터는 Docker 볼륨에 자동으로 저장되어 영구 보존됩니다
+
+### 로컬 개발
+
+#### 1. 백엔드 실행
 
 ```bash
 cd backend
@@ -40,7 +60,7 @@ npm run start:dev
 
 백엔드는 `http://localhost:3001`에서 실행됩니다.
 
-### 2. 프론트엔드 실행
+#### 2. 프론트엔드 실행
 
 ```bash
 cd frontend

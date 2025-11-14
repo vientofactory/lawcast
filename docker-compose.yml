@@ -1,0 +1,70 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: lawcast-backend
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - FRONTEND_URL=http://localhost:3000,http://frontend:3000
+      # Add your environment variables here
+      - RECAPTCHA_SECRET_KEY=${RECAPTCHA_SECRET_KEY:-}
+      - DATABASE_PATH=/app/data/lawcast.db
+    volumes:
+      # Mount SQLite database to persist data
+      - lawcast_db:/app/data
+      # Optional: Mount logs directory
+      - lawcast_logs:/app/logs
+    networks:
+      - lawcast-network
+    healthcheck:
+      test:
+        ["CMD", "node", "-e", "require('http').get('http://localhost:3001/api/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: lawcast-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PUBLIC_VITE_API_BASE_URL=http://localhost:3001/api
+      - PUBLIC_RECAPTCHA_SITE_KEY=${PUBLIC_RECAPTCHA_SITE_KEY:-}
+      # SvelteKit adapter-node configuration
+      - HOST=0.0.0.0
+      - PORT=3000
+      - ORIGIN=http://localhost:3000
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - lawcast-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  lawcast-network:
+    driver: bridge
+
+volumes:
+  lawcast_db:
+    driver: local
+  lawcast_logs:
+    driver: local
