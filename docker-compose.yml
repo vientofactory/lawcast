@@ -53,6 +53,21 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+  redis:
+    image: redis:8.2.2
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Seoul
+    networks:
+      - lawcast-network
+    ports:
+      - "127.0.0.1:6399:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
 networks:
   lawcast-network:
